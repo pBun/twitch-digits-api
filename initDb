@@ -1,0 +1,18 @@
+ CREATE TABLE games
+ (
+ 	_id INTEGER PRIMARY KEY,
+ 	name TEXT,
+ 	box_art TEXT,
+ 	logo_art TEXT
+ );
+CREATE TABLE popularity
+(
+	game_id INTEGER NOT NULL,
+	create_date TIMESTAMP with time zone,
+	viewers INTEGER,
+	channels INTEGER,
+	PRIMARY KEY (game_id, create_date),
+	CONSTRAINT game_id_fkey FOREIGN KEY (game_id)
+		REFERENCES games (_id) MATCH SIMPLE
+		ON UPDATE NO ACTION ON DELETE NO ACTION
+);
