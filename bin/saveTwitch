@@ -2,9 +2,11 @@
 
 var https = require('https');
 var { Client } = require('pg');
-var client = new Client({
-	host: process.env.DATABASE_URL || 'localhost'
-});
+var pgOpts = process.env.DATABASE_URL ? {
+	connectionString: process.env.DATABASE_URL,
+  	ssl: true
+} : null;
+var client = new Client(pgOpts);
 
 var TWITCH_API = 'https://api.twitch.tv/kraken';
 var TWITCH_CLIENT_ID = '7vbwgc035rp1d3n5m9w3v5irl88s9b';
