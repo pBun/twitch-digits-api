@@ -1,0 +1,9 @@
+{
+  "name": "stats-twitch",
+  "description": "Save twitch stats to db",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "pg": "^7.3.0"
+  }
+}

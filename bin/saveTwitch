@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+var https = require('https');
+var { Client } = require('pg');
+var client = new Client();
+
+var TWITCH_API = 'https://api.twitch.tv/kraken';
+var TWITCH_CLIENT_ID = '7vbwgc035rp1d3n5m9w3v5irl88s9b';
+var TIMESTAMP = new Date();
+
+client.connect(process.env.DATABASE_URL);
+
+var getTwitchData = () => {
+    return new Promise((resolve, reject) => {
+        https.get(TWITCH_API + '/games/top?limit=100&client_id=' + TWITCH_CLIENT_ID, res => {
+            res.setEncoding('utf8');
+            var data = '';
+            res.on('data', d => {
+                data += d;
+            });
+            res.on('end', () => {
+                data = JSON.parse(data);
+                resolve(data);
+            });
+        });
+    });
+};
+
+var populateGame = (game) => {
+	return new Promise((resolve, reject) => {
+		client.query('SELECT * FROM games WHERE _id = ' + game._id, function(err, res) {
+			if (err) return reject(err.detail || err.hint);
+			if (res.rowCount <= 0) {
+				var queryText = 'INSERT INTO games(_id, name, box_art, logo_art) VALUES($1, $2, $3, $4)';
+				client.query(queryText, [game._id, game.name, game.box.large, game.logo.large], function(err, res) {
+					if (err) return reject(err.detail || err.hint);
+					resolve(true);
+				});
+			} else {
+				resolve();
+			}
+		});
+	});
+};
+
+var populatePopularity = (entry) => {
+	return new Promise((resolve, reject) => {
+		var queryText = 'INSERT INTO popularity(game_id, create_date, viewers, channels) VALUES($1, $2, $3, $4)'
+		client.query(queryText, [entry.game._id, TIMESTAMP, entry.viewers, entry.channels], function(err, res) {
+			if (err) return reject(err.detail || err.hint);
+			resolve();
+		});
+	});
+};
+
+var handleErr = (err) => {
+	console.log(err);
+};
+
+getTwitchData().then((data) => {
+	var promises = [];
+    data.top.forEach(entry => {
+    	var p = new Promise((resolve, reject) => {
+    		populateGame(entry.game).then(() => {
+    			return populatePopularity(entry);
+	        }, handleErr)
+	        .then(resolve, (err) => {
+	        	handleErr(err);
+	        	resolve();
+	        });
+    	});
+    	promises.push(p)
+	});
+	Promise.all(promises).then(() => {
+		client.end();
+	});
+});
