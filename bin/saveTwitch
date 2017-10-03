@@ -1,33 +1,26 @@
 #!/usr/bin/env node
 
-var gamesApi = require('../api/twitch/games');
-var streamsApi = require('../api/twitch/streams');
+var twitch = require('../api/twitch');
+
+var client = require('../models/client');
 
 var Game = require('../models/Game');
 var GameSnapshot = require('../models/GameSnapshot');
 var Channel = require('../models/Channel');
 var ChannelSnapshot = require('../models/ChannelSnapshot');
 
-var { Client } = require('pg');
-var pgOpts = process.env.DATABASE_URL ? {
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-} : null;
-var client = new Client(pgOpts);
-client.connect();
-
 var TIMESTAMP = new Date();
 
 var handleErr = (err) => {
     if (!err) return;
-    console.log(err.detail || err.hint);
+    console.log(err.detail || err.hint || err);
 };
 
 var saveGames = (games) => {
     return new Promise((resolve, reject) => {
         var promises = [];
         games.forEach(g => {
-            var game = new Game(client, g._id, {
+            var game = new Game(g._id, {
                 name: g.name,
                 box_art: g.box.large,
                 logo_art: g.logo.large
@@ -36,7 +29,7 @@ var saveGames = (games) => {
         });
         return Promise.all(promises).then(() => {
             resolve(games);
-        });
+        }, handleErr);
     });
 };
 
@@ -44,7 +37,7 @@ var saveChannels = (channels) => {
     return new Promise((resolve, reject) => {
         var promises = [];
         channels.forEach(c => {
-            var channel = new Channel(client, c._id, {
+            var channel = new Channel(c._id, {
                 name: c.name,
                 display_name: c.display_name,
                 url: c.url,
@@ -54,7 +47,7 @@ var saveChannels = (channels) => {
         });
         return Promise.all(promises).then(() => {
             resolve(channels);
-        });
+        }, handleErr);
     });
 };
 
@@ -62,7 +55,7 @@ var saveGameSnapshots = (snapshots) => {
     return new Promise((resolve, reject) => {
         var promises = [];
         snapshots.forEach(s => {
-            var snapshot = new GameSnapshot(client, s.game._id, TIMESTAMP, {
+            var snapshot = new GameSnapshot(s.game._id, TIMESTAMP, {
                 viewers: s.viewers,
                 channels: s.channels
             });
@@ -70,7 +63,7 @@ var saveGameSnapshots = (snapshots) => {
         });
         return Promise.all(promises).then(() => {
             resolve(snapshots);
-        });
+        }, handleErr);
     });
 };
 
@@ -78,7 +71,7 @@ var saveChannelSnapshots = (snapshots) => {
     return new Promise((resolve, reject) => {
         var promises = [];
         snapshots.forEach(s => {
-            var snapshot = new ChannelSnapshot(client, s.channel._id, TIMESTAMP, {
+            var snapshot = new ChannelSnapshot(s.channel._id, TIMESTAMP, {
                 game_id: s.game_id,
                 viewers: s.viewers
             });
@@ -86,20 +79,20 @@ var saveChannelSnapshots = (snapshots) => {
         });
         return Promise.all(promises).then(() => {
             resolve(snapshots);
-        });
+        }, handleErr);
     });
 };
 
 var gameSnaps = [];
 var channelSnaps = [];
-gamesApi()
+twitch.games()
     .then((res) => {
         gameSnaps = res;
 
         // get and format stream data
         var promises = [];
         gameSnaps.forEach(g => {
-            var p = streamsApi({ game: g.game.name }).then((streams) => {
+            var p = twitch.streams({ game: g.game.name }).then((streams) => {
                 streams.forEach(s => { s.game_id = g.game._id; })
                 channelSnaps = channelSnaps.concat.apply([], streams);
             });

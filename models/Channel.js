@@ -1,5 +1,6 @@
-var Channel = function(client, id, options) {
-    this.client = client;
+var client = require('./client');
+
+var Channel = function(id, options) {
     this._id = id;
     this.name = options.name;
     this.display_name = options.display_name;
@@ -10,7 +11,7 @@ var Channel = function(client, id, options) {
 Channel.prototype._insert = function() {
     return new Promise((resolve, reject) => {
         var queryText = 'INSERT INTO channels(_id, name, display_name, url, logo_art) VALUES($1, $2, $3, $4, $5)';
-        this.client.query(queryText, [this._id, this.name, this.display_name, this.url, this.logo_art], function(err, res) {
+        client.query(queryText, [this._id, this.name, this.display_name, this.url, this.logo_art], function(err, res) {
             if (err) return reject(err);
             resolve();
         });
@@ -20,7 +21,7 @@ Channel.prototype._insert = function() {
 Channel.prototype._update = function() {
     return new Promise((resolve, reject) => {
         var queryText = 'UPDATE channels SET(name, display_name, url logo_art) = ($2, $3, $4, $5) WHERE _id = $1';
-        this.client.query(queryText, [this._id, this.name, this.display_name, this.url, this.logo_art], function(err, res) {
+        client.query(queryText, [this._id, this.name, this.display_name, this.url, this.logo_art], function(err, res) {
             if (err) return reject(err);
             resolve();
         });

@@ -1,5 +1,6 @@
-var GameSnapshot = function(client, game_id, snapshot_time, options) {
-    this.client = client;
+var client = require('./client');
+
+var GameSnapshot = function(game_id, snapshot_time, options) {
     this.game_id = game_id;
     this.snapshot_time = snapshot_time;
     this.channels = options.channels;
@@ -9,7 +10,7 @@ var GameSnapshot = function(client, game_id, snapshot_time, options) {
 GameSnapshot.prototype._insert = function() {
     return new Promise((resolve, reject) => {
         var queryText = 'INSERT INTO game_snapshots(game_id, snapshot_time, channels, viewers) VALUES($1, $2, $3, $4)';
-        this.client.query(queryText, [this.game_id, this.snapshot_time, this.channels, this.viewers], function(err, res) {
+        client.query(queryText, [this.game_id, this.snapshot_time, this.channels, this.viewers], function(err, res) {
             if (err) return reject(err);
             resolve();
         });
