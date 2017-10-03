@@ -1,18 +1,45 @@
- CREATE TABLE games
- (
- 	_id INTEGER PRIMARY KEY,
- 	name TEXT,
- 	box_art TEXT,
- 	logo_art TEXT
- );
-CREATE TABLE popularity
+DROP TABLE games, game_snapshots, channels, channel_snapshots;
+
+CREATE TABLE games
 (
-	game_id INTEGER NOT NULL,
-	create_date TIMESTAMP with time zone,
-	viewers INTEGER,
-	channels INTEGER,
-	PRIMARY KEY (game_id, create_date),
-	CONSTRAINT game_id_fkey FOREIGN KEY (game_id)
-		REFERENCES games (_id) MATCH SIMPLE
-		ON UPDATE NO ACTION ON DELETE NO ACTION
+    _id INTEGER PRIMARY KEY,
+    name TEXT,
+    box_art TEXT,
+    logo_art TEXT
+);
+
+CREATE TABLE game_snapshots
+(
+    game_id INTEGER NOT NULL,
+    snapshot_time TIMESTAMP with time zone,
+    viewers INTEGER,
+    channels INTEGER,
+    PRIMARY KEY (game_id, snapshot_time),
+    CONSTRAINT game_id_fkey FOREIGN KEY (game_id)
+        REFERENCES games (_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE channels
+(
+    _id INTEGER PRIMARY KEY,
+    name TEXT,
+    display_name TEXT,
+    url TEXT,
+    logo_art TEXT
+);
+
+CREATE TABLE channel_snapshots
+(
+    channel_id INTEGER,
+    snapshot_time TIMESTAMP with time zone,
+    game_id INTEGER,
+    viewers INTEGER,
+    PRIMARY KEY (channel_id, snapshot_time),
+    CONSTRAINT channel_id_fkey FOREIGN KEY (channel_id)
+        REFERENCES channels (_id)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT game_id_fkey FOREIGN KEY (game_id)
+        REFERENCES games (_id)
+        ON UPDATE CASCADE ON DELETE CASCADE
 );

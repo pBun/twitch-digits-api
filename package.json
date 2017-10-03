@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "pg": "^7.3.0"
+    "pg": "^7.3.0",
+    "request": "^2.83.0"
   }
 }
