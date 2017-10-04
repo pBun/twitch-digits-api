@@ -20,7 +20,7 @@ Channel.prototype._insert = function() {
 
 Channel.prototype._update = function() {
     return new Promise((resolve, reject) => {
-        var queryText = 'UPDATE channels SET(name, display_name, url logo_art) = ($2, $3, $4, $5) WHERE _id = $1';
+        var queryText = 'UPDATE channels SET(name, display_name, url, logo_art) = ($2, $3, $4, $5) WHERE _id = $1';
         client.query(queryText, [this._id, this.name, this.display_name, this.url, this.logo_art], function(err, res) {
             if (err) return reject(err);
             resolve();
