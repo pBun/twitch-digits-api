@@ -1,16 +1,11 @@
+# App #
+###################
+public
+
 # Node #
 ###################
 node_modules
 .npm
-
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
 
 # Packages #
 ############

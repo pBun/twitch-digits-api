@@ -1,11 +1,27 @@
 {
-  "name": "stats-twitch",
-  "description": "Save twitch stats to db",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "express": "^4.16.1",
-    "pg": "^7.3.0",
-    "request": "^2.83.0"
-  }
+    "name": "stats-twitch",
+    "description": "Save twitch stats to db",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "serve": "heroku local index.js",
+        "dev": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress --hide-modules --watch",
+        "prod": "./node_modules/.bin/cross-env NODE_ENV=production ./node_modules/.bin/webpack --progress --hide-modules"
+    },
+    "dependencies": {
+        "express": "^4.16.1",
+        "pg": "^7.3.0",
+        "request": "^2.83.0",
+        "vue": "^2.4.4"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
+        "cross-env": "^5.0.5",
+        "css-loader": "^0.28.7",
+        "file-loader": "^1.1.4",
+        "vue-loader": "^13.0.5",
+        "vue-template-compiler": "^2.4.4",
+        "webpack": "^3.6.0"
+    }
 }
