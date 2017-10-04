@@ -3,7 +3,7 @@ var config = require('./config');
 
 module.exports = function(options) {
     var opts = Object.assign({
-        limit: 100,
+        limit: 25,
         offset: 0
     }, options);
 
