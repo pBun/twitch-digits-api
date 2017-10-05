@@ -1,6 +1,5 @@
 require('./styles.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
 var ForkMe = require('../ForkMe');
 
 var App = (props) => {
