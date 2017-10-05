@@ -37,6 +37,27 @@ Snapshot.prototype.getFromTwitch = function() {
     });
 };
 
+Snapshot.prototype.get = function() {
+    return new Promise((resolve, reject) => {
+        this.summary.get().then(() => {
+            var client = db.client();
+             client.connect();
+            var queryText = 'SELECT * FROM game_snapshots JOIN games ON (games._id = game_snapshots.game_id) WHERE game_snapshots.snapshot_time = $1';
+            return client.query(queryText, [ this.time.toISOString() ], (err, res) => {
+                client.end();
+                if (err) return reject(err);
+                this.gameSnapshots = res.rows.map((g) => {
+                    return new GameSnapshot(g.game_id, g.snapshot_time, g);
+                });
+                this.games = res.rows.map((g) => {
+                    return new Game(g.game_id, g);
+                });
+                resolve(this);
+            });
+        }, reject);
+    });
+};
+
 Snapshot.prototype.save = function() {
     return new Promise((resolve, reject) => {
 
@@ -56,6 +77,25 @@ Snapshot.prototype.save = function() {
             })
             .then(resolve, reject);
     });
+};
+
+Snapshot.prototype.prettify = function() {
+    return {
+        viewers: this.summary.viewers || 0,
+        channels: this.summary.channels || 0,
+        games: this.gameSnapshots.map((gs) => {
+            var g = this.games.filter(g => g._id === gs.game_id);
+            g = g.length && g[0];
+            return {
+                name: g.name,
+                box: g.box_art,
+                logo: g.logo_art,
+                viewers: gs.viewers,
+                channels: gs.channels
+            }
+        })
+    };
+
 };
 
 module.exports = Snapshot;
