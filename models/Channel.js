@@ -1,11 +1,23 @@
 var client = require('./client');
 
 var Channel = function(id, options) {
+    options = options || {};
     this._id = id;
     this.name = options.name;
     this.display_name = options.display_name;
     this.url = options.url;
     this.logo_art = options.logo_art;
+};
+
+Channel.prototype.get = function() {
+    return new Promise((resolve, reject) => {
+        var queryText = 'SELECT * FROM channels WHERE _id = $1';
+        client.query(queryText, [this._id], (err, res) => {
+            if (err || !res.rows.length) return reject(err);
+            Object.assign(this, res.rows[0]);
+            resolve(this);
+        });
+    });
 };
 
 Channel.prototype._insert = function() {
