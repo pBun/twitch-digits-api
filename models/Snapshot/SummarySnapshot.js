@@ -1,5 +1,5 @@
 var db = require('../../models/db');
-var twitch = require('../../api/twitch');
+var twitch = require('../../models/twitch');
 
 var SummarySnapshot = function(_time, options) {
     options = options || {};

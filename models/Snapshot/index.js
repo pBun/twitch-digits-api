@@ -1,5 +1,5 @@
 var db = require('../../models/db');
-var twitch = require('../../api/twitch');
+var twitch = require('../../models/twitch');
 
 var SummarySnapshot = require('../../models/Snapshot/SummarySnapshot');
 var Game = require('../../models/Game');
