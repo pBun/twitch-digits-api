@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './public_src/index.jsx',
+    entry: './public_src/index.js',
     output: {
         path: path.resolve(__dirname, './public'),
         publicPath: '/',
