@@ -1,4 +1,4 @@
-var client = require('./client');
+var db = require('./db');
 var twitch = require('../api/twitch');
 
 var SummarySnapshot = require('../models/SummarySnapshot');

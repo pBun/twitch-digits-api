@@ -1,4 +1,4 @@
-var client = require('./client');
+var db = require('./db');
 
 var Game = function(id, options) {
     options = options || {};
@@ -10,9 +10,13 @@ var Game = function(id, options) {
 
 Game.prototype.get = function() {
     return new Promise((resolve, reject) => {
+        var client = db.client();
+        client.connect();
         var queryText = 'SELECT * FROM games WHERE _id = $1';
         client.query(queryText, [this._id], (err, res) => {
-            if (err || !res.rows.length) return reject(err);
+            client.end();
+            if (err) return reject(err);
+            if (!res.rows.length) return reject('Game not found (' + this._id + ').');
             Object.assign(this, res.rows[0]);
             resolve(this);
         });
@@ -21,8 +25,11 @@ Game.prototype.get = function() {
 
 Game.prototype._insert = function() {
     return new Promise((resolve, reject) => {
+        var client = db.client();
+        client.connect();
         var queryText = 'INSERT INTO games(_id, name, box_art, logo_art) VALUES($1, $2, $3, $4)';
-        client.query(queryText, [this._id, this.name, this.box_art, this.logo_art], function(err, res) {
+        client.query(queryText, [this._id, this.name, this.box_art, this.logo_art], (err, res) => {
+            client.end();
             if (err) return reject(err);
             resolve(this);
         });
@@ -31,8 +38,11 @@ Game.prototype._insert = function() {
 
 Game.prototype._update = function() {
     return new Promise((resolve, reject) => {
+        var client = db.client();
+        client.connect();
         var queryText = 'UPDATE games SET(name, box_art, logo_art) = ($2, $3, $4) WHERE _id = $1';
-        client.query(queryText, [this._id, this.name, this.box_art, this.logo_art], function(err, res) {
+        client.query(queryText, [this._id, this.name, this.box_art, this.logo_art], (err, res) => {
+            client.end();
             if (err) return reject(err);
             resolve(this);
         });

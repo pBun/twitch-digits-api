@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var client = require('../models/client');
+var client = require('../models/db').client();
 var twitch = require('../api/twitch');
 
 var Snapshot = require('../models/Snapshot');
@@ -9,14 +9,8 @@ var handleErr = (err) => {
     console.log(err);
 };
 
-client.connect();
-var snapshot = new Snapshot();
-snapshot.getFromTwitch().then(() => {
-    return snapshot.save();
-}, handleErr)
-.then(() => {
-    client.end();
-}, (err) => {
-    handleErr(err);
-    client.end();
-});
+new Snapshot().getFromTwitch()
+    .then((snapshot) => {
+        return snapshot.save();
+    }, handleErr)
+    .then(() => {}, handleErr);

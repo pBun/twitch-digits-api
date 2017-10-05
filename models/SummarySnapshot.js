@@ -1,4 +1,4 @@
-var client = require('./client');
+var db = require('./db');
 var twitch = require('../api/twitch');
 
 var SummarySnapshot = function(_time, options) {
@@ -21,21 +21,28 @@ SummarySnapshot.prototype.getFromTwitch = function() {
 
 SummarySnapshot.prototype.get = function() {
     return new Promise((resolve, reject) => {
-        var queryText = 'SELECT * FROM summary_snapshots WHERE _time=$1';
-        client.query(queryText, [this._time], function(err, res) {
-            if (err || !res.rows.length) return reject(err);
+        var client = db.client();
+        client.connect();
+        var queryText = 'SELECT * FROM summary_snapshots WHERE _time = $1';
+        client.query(queryText, [this._time], (err, res) => {
+            if (err) return reject(err);
+            if (!res.rows.length) return reject('No summaries found for this time (' + this._time + ').');
             Object.assign(this, res.rows[0]);
             resolve(this);
+            client.end();
         });
     });
 };
 
 SummarySnapshot.prototype._insert = function() {
     return new Promise((resolve, reject) => {
+        var client = db.client();
+        client.connect();
         var queryText = 'INSERT INTO summary_snapshots(_time, channels, viewers) VALUES($1, $2, $3)';
-        client.query(queryText, [this._time, this.channels, this.viewers], function(err, res) {
+        client.query(queryText, [this._time, this.channels, this.viewers], (err, res) => {
             if (err) return reject(err);
             resolve();
+            client.end();
         });
     });
 };
