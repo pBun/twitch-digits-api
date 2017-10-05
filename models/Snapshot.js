@@ -26,7 +26,11 @@ Snapshot.prototype.getFromTwitch = function() {
                 return new GameSnapshot(g.game._id, this.time, g);
             });
             this.games = filtered.map((g) => {
-                return new Game(g.game._id, g.game);
+                return new Game(g.game._id, {
+                    name: g.game.name,
+                    box_art: g.game.box.large,
+                    logo_art: g.game.logo.large,
+                });
             });
             resolve(this);
         }, reject);
