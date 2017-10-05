@@ -4,28 +4,38 @@ var twitch = require('../api/twitch');
 
 var client = require('../models/client');
 
+var Snapshot = require('../models/Snapshot');
 var Game = require('../models/Game');
 var GameSnapshot = require('../models/GameSnapshot');
-var Channel = require('../models/Channel');
-var ChannelSnapshot = require('../models/ChannelSnapshot');
 
 var TIMESTAMP = new Date();
+var SIG_CUTOFF = 0.001;
 
 var handleErr = (err) => {
     if (!err) return;
     console.log(err.detail || err.hint || err);
 };
 
+var saveSnapshot = (snapshot) => {
+    return new Promise((resolve, reject) => {
+        var obj = new Snapshot(TIMESTAMP, {
+            viewers: snapshot.viewers,
+            channels: snapshot.channels
+        });
+        obj.save().then(resolve, reject);
+    });
+};
+
 var saveGames = (games) => {
     return new Promise((resolve, reject) => {
         var promises = [];
         games.forEach(g => {
-            var game = new Game(g._id, {
+            var obj = new Game(g._id, {
                 name: g.name,
                 box_art: g.box.large,
                 logo_art: g.logo.large
             });
-            promises.push(game.save());
+            promises.push(obj.save());
         });
         return Promise.all(promises).then(() => {
             resolve(games);
@@ -33,82 +43,41 @@ var saveGames = (games) => {
     });
 };
 
-var saveChannels = (channels) => {
+var saveGameSnapshots = (gameSnapshots) => {
     return new Promise((resolve, reject) => {
         var promises = [];
-        channels.forEach(c => {
-            var channel = new Channel(c._id, {
-                name: c.name,
-                display_name: c.display_name,
-                url: c.url,
-                logo_art: c.logo
-            });
-            promises.push(channel.save());
-        });
-        return Promise.all(promises).then(() => {
-            resolve(channels);
-        }, handleErr);
-    });
-};
-
-var saveGameSnapshots = (snapshots) => {
-    return new Promise((resolve, reject) => {
-        var promises = [];
-        snapshots.forEach(s => {
-            var snapshot = new GameSnapshot(s.game._id, TIMESTAMP, {
+        gameSnapshots.forEach(s => {
+            var obj = new GameSnapshot(s.game._id, TIMESTAMP, {
                 viewers: s.viewers,
                 channels: s.channels
             });
-            promises.push(snapshot.save());
+            promises.push(obj.save());
         });
         return Promise.all(promises).then(() => {
-            resolve(snapshots);
+            resolve(gameSnapshots);
         }, handleErr);
     });
 };
 
-var saveChannelSnapshots = (snapshots) => {
-    return new Promise((resolve, reject) => {
-        var promises = [];
-        snapshots.forEach(s => {
-            var snapshot = new ChannelSnapshot(s.channel._id, TIMESTAMP, {
-                game_id: s.game_id,
-                viewers: s.viewers
-            });
-            promises.push(snapshot.save());
-        });
-        return Promise.all(promises).then(() => {
-            resolve(snapshots);
-        }, handleErr);
-    });
-};
-
+var summary = {};
 var gameSnaps = [];
-var channelSnaps = [];
-twitch.games()
+var games = [];
+twitch.summary()
     .then((res) => {
-        gameSnaps = res;
-
-        // get and format stream data
-        var promises = [];
-        gameSnaps.forEach(g => {
-            var p = twitch.streams({ game: g.game.name }).then((streams) => {
-                streams.forEach(s => { s.game_id = g.game._id; })
-                channelSnaps = channelSnaps.concat.apply([], streams);
-            });
-            promises.push(p);
+        summary = res;
+        return twitch.games({ limit: 50 });
+    })
+    .then((res) => {
+        gameSnaps = res.filter(g => {
+            return g.viewers / summary.viewers > SIG_CUTOFF;
         });
-        return Promise.all(promises);
+        games = gameSnaps.map((g) => { return g.game; });
+
+        return Promise.all([saveGames(games), saveSnapshot(summary)]);
     }, handleErr)
     .then(() => {
-        // save or update games and channels
-        var games = gameSnaps.map((g) => { return g.game; });
-        var channels = channelSnaps.map((c) => { return c.channel; });
-        return Promise.all([saveGames(games), saveChannels(channels)]);
-    }, handleErr)
-    .then(() => {
-        // save snapshots
-        return Promise.all([saveGameSnapshots(gameSnaps), saveChannelSnapshots(channelSnaps)]);
+        // save game snapshots after fkeys set (games/snapshot dates)
+        return saveGameSnapshots(gameSnaps);
     }, handleErr)
     .then(() => {
         client.end();
