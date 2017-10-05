@@ -5,4 +5,6 @@ router.get('/test', function(req, res) {
     res.json({ importantMessage: 'what up fam?' });
 });
 
+router.use('/snapshot', require('./snapshot'));
+
 module.exports = router;
