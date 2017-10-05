@@ -17,21 +17,21 @@
         "delay": "500"
     },
     "dependencies": {
-        "express": "^4.16.1",
-        "pg": "^7.3.0",
-        "request": "^2.83.0",
-        "vue": "^2.4.4"
-    },
-    "devDependencies": {
         "babel-core": "^6.26.0",
         "babel-loader": "^7.1.2",
-        "cross-env": "^5.0.5",
         "css-loader": "^0.28.7",
+        "express": "^4.16.1",
         "file-loader": "^1.1.4",
-        "nodemon": "^1.12.1",
-        "npm-run-all": "^4.1.1",
+        "pg": "^7.3.0",
+        "request": "^2.83.0",
+        "vue": "^2.4.4",
         "vue-loader": "^13.0.5",
         "vue-template-compiler": "^2.4.4",
         "webpack": "^3.6.0"
+    },
+    "devDependencies": {
+        "cross-env": "^5.0.5",
+        "nodemon": "^1.12.1",
+        "npm-run-all": "^4.1.1"
     }
 }
