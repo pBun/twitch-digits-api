@@ -1,4 +1,4 @@
-var db = require('./db');
+var db = require('../../models/db');
 
 var GameSnapshot = function(game_id, snapshot_time, options) {
     options = options || {};

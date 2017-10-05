@@ -1,4 +1,4 @@
-var db = require('./db');
+var db = require('../../models/db');
 
 var ChannelSnapshot = function(channel_id, snapshot_time, options) {
     options = options || {};

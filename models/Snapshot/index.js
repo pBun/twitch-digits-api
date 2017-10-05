@@ -1,9 +1,9 @@
-var db = require('./db');
-var twitch = require('../api/twitch');
+var db = require('../../models/db');
+var twitch = require('../../api/twitch');
 
-var SummarySnapshot = require('../models/SummarySnapshot');
-var Game = require('../models/Game');
-var GameSnapshot = require('../models/GameSnapshot');
+var SummarySnapshot = require('../../models/Snapshot/SummarySnapshot');
+var Game = require('../../models/Game');
+var GameSnapshot = require('../../models/Snapshot/GameSnapshot');
 
 var Snapshot = function(time) {
     this.gameLimit = 50;

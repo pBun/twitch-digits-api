@@ -1,4 +1,4 @@
-var db = require('./db');
+var db = require('../models/db');
 
 var Game = function(id, options) {
     options = options || {};

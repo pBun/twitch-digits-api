@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-var client = require('../models/db').client();
-var twitch = require('../api/twitch');
-
 var Snapshot = require('../models/Snapshot');
 
 var handleErr = (err) => {
