@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/:id', function(req, res) {
-    res.json({ 'your-id': req.params.id });
+router.get('/test', function(req, res) {
+    res.json({ importantMessage: 'what up fam?' });
 });
 
 module.exports = router;
