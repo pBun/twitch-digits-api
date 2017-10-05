@@ -39,7 +39,7 @@ module.exports = {
     },
     devtool: 'eval-source-map',
     plugins: [
-        new HtmlWebpackPlugin({ filename: './public_src/index.html' })
+        new HtmlWebpackPlugin({ template: './public_src/index.html', filename: 'index.html' })
     ]
 };
 
