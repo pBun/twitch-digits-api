@@ -4,6 +4,4 @@ var pgOpts = process.env.DATABASE_URL ? {
     ssl: true
 } : null;
 var client = new Client(pgOpts);
-client.connect();
-
 module.exports = client;

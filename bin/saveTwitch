@@ -62,6 +62,7 @@ var saveGameSnapshots = (gameSnapshots) => {
 var summary = {};
 var gameSnaps = [];
 var games = [];
+client.connect();
 twitch.summary()
     .then((res) => {
         summary = res;
