@@ -10,13 +10,15 @@ module.exports = {
         filename: 'app.js'
     },
     module: {
-        rules: [{
-                test: /\.(js|jsx)$/,
-                loaders: 'babel-loader',
-                exclude: /(node_modules|public\/)/,
-                query: {
-                    presets: ['react', 'es2015']
-                }
+        rules: [
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
@@ -33,6 +35,11 @@ module.exports = {
                 }
             }
         ]
+    },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        }
     },
     performance: {
         hints: process.env.NODE_ENV === 'production' ? 'warning' : false

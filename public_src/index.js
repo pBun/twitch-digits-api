@@ -1,8 +1,8 @@
-require('./global.css');
+import './global.css';
+import Vue from 'vue';
+import App from './components/App.vue';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-var App = require('./components/App');
-var el = <App name="test" />;
-ReactDOM.render(el, document.getElementById('app'));
+new Vue({
+    el: '#app',
+    render: function(h) { return h(App) }
+});
