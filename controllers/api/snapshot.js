@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 
 router.get('/times', function(req, res) {
     db.getSnapshotTimes()
-        .then(times => jsonRes(res, times.map(t => t._time)), err => jsonRes(res, null, err || true));
+        .then(times => jsonRes(res, times), err => jsonRes(res, null, err || true));
 });
 
 router.get('/:time', function(req, res) {

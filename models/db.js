@@ -10,7 +10,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             var client = new Client(pgOpts);
             client.connect();
-            var queryText = 'SELECT _time FROM summary_snapshots';
+            var queryText = 'SELECT _time, viewers, channels FROM summary_snapshots';
             client.query(queryText, (err, res) => {
                 client.end();
                 if (err || !res.rows.length) return reject(err);
