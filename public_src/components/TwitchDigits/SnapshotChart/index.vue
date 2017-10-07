@@ -1,10 +1,15 @@
 <template>
 <div class="snapshot-chart chart-wrapper">
-    <div class="explanation" v-if="selectedGame" :style="{ backgroundImage: bgImg(selectedData.image) }">
+    <div class="explanation" :style="{ backgroundImage: bgImg(selectedData.image) }">
         <div class="info">
-            <p class="inner-info">
-                <span class="stat">{{ selectedData.viewers / baseData.viewers | percent(2) }}</span>
-                of all <strong>{{ selectedChannel ? selectedGame.name : '' }}</strong> viewers are currently watching <strong>{{ selectedData.name }}</strong>
+            <p class="inner-info" v-if="selectedGame">
+                <span class="title">{{ selectedData.name }}</span>
+                <strong>{{ selectedData.viewers / baseData.viewers | percent(2) }}</strong> of all <strong>{{ selectedData.type === 'channel' ? selectedGame.name : '' }}</strong> viewers {{ prettyTime ? 'were' : 'are' }} watching this {{ selectedData.type }} {{ prettyTime ? 'at ' + prettyTime + '.' : 'now.' }}
+            </p>
+            <p class="inner-info" v-if="snapshot && !selectedGame && !selectedChannel">
+              <span class="title">{{ prettyTime ? prettyTime : 'Now' }}</span>
+              <strong>{{ snapshot.viewers | prettyNumber }}</strong> viewers<br />
+              <strong>{{ snapshot.channels | prettyNumber }}</strong> channels
             </p>
         </div>
         <span class="back-info">click to go back</span>
@@ -16,7 +21,7 @@
 import util from '../util';
 import TwitchChart from './TwitchChart';
 export default {
-    props: [ 'snapshot' ],
+    props: [ 'snapshot', 'time' ],
     data() {
         return {
             chart: null,
@@ -27,6 +32,12 @@ export default {
         };
     },
     computed: {
+        prettyTime(scope) {
+            var t = scope.time;
+            if (!t) return '';
+            var d = new Date(t);
+            return d.toLocaleString();
+        },
         selectedData(scope) {
             return scope.selectedChannel || scope.selectedGame || scope.snapshot || { name: '', viewers: 0 };
         },
@@ -74,6 +85,9 @@ export default {
         percent(v, decimals) {
             if (typeof v !== 'number') return v;
             return (v * 100).toFixed(decimals || 0) + '%';
+        },
+        prettyNumber(v) {
+          return v.toFixed().toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     },
     watch: {
@@ -141,10 +155,11 @@ export default {
   margin: 0;
 }
 
-.twitch-digits .snapshot-chart .explanation .info .inner-info .stat {
-  font-size: 2.5em;
-  line-height: 1.25em;
+.twitch-digits .snapshot-chart .explanation .info .inner-info .title {
+  font-size: 2em;
+  line-height: 1em;
   display: block;
+  margin-bottom: 0.1em;
 }
 
 .twitch-digits .snapshot-chart .explanation .back-info {

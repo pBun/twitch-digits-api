@@ -1,6 +1,6 @@
 <template>
 <div class="twitch-digits">
-    <snapshot-chart :snapshot="snapshot" :class="{ 'loading': loading || error }"></snapshot-chart>
+    <snapshot-chart :snapshot="snapshot" :time="selected" :class="{ 'loading': loading || error }"></snapshot-chart>
     <snapshot-menu :times="times" :selected="selected" @linkClick="refresh"></snapshot-menu>
     <walking-loader class="loader" :class="{ 'visible': (!initialized || loading) }"></walking-loader>
     <error-modal :error="error"></error-modal>
