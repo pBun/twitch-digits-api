@@ -108,6 +108,8 @@ export default {
   bottom: 0;
   width: 56.5%;
   height: 56.5%;
+  width: 69.5%;
+  height: 69.5%;
   border-radius: 50%;
   text-align: center;
   color: #666;
