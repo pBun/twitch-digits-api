@@ -85,12 +85,13 @@ TwitchChart.prototype.build = function(chartData) {
   chart.colors.domain(uniqueNames);
 
   chart.path = chart.vis
-    // .data([chartData])
+    .data([chartData])
     .selectAll('path')
     .data(nodes);
 
-  // chart.path.exit()
-  //   .remove();
+  // clear existing chart if there is one
+  chart.path.exit()
+    .remove();
 
   chart.path
     .enter()
