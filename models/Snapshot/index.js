@@ -98,8 +98,8 @@ Snapshot.prototype.prettify = function() {
     };
     r.games.push({
         name: 'Other Games',
-        viewers: r.viewers - r.games.reduce((t, g) => (t.viewers || t) + g.viewers),
-        channels: r.channels - r.games.reduce((t, g) => (t.channels || t) + g.channels)
+        viewers: r.viewers - r.games.reduce((t, g) => (t.viewers || t) + g.viewers, 0),
+        channels: r.channels - r.games.reduce((t, g) => (t.channels || t) + g.channels, 0)
     });
     return r;
 };
