@@ -1,6 +1,6 @@
 import './global.css';
 import Vue from 'vue';
-import App from './components/App.vue';
+import App from './components/TwitchDigits/index.vue';
 
 new Vue({
     el: '#app',
