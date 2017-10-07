@@ -97,7 +97,7 @@ TwitchChart.prototype.build = function(chartData) {
     .enter()
     .append('svg:path')
     .on('mouseover', this.mouseoverHandler.bind(this))
-    .on('click', this.clickHandler.bind(this))
+    // .on('click', this.clickHandler.bind(this)) // TODO: re-enable when we have channels
     .each(function(d) {
       // Setup for switching data: stash the old values for transition.
       d.x0 = d.x;
