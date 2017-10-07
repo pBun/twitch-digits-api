@@ -80,7 +80,7 @@ Snapshot.prototype.save = function() {
 };
 
 Snapshot.prototype.prettify = function() {
-    return {
+    var r = {
         viewers: this.summary.viewers || 0,
         channels: this.summary.channels || 0,
         games: this.gameSnapshots.map((gs) => {
@@ -88,14 +88,18 @@ Snapshot.prototype.prettify = function() {
             g = g.length && g[0];
             return {
                 name: g.name,
-                box: g.box_art,
-                logo: g.logo_art,
+                image: g.box_art,
                 viewers: gs.viewers,
                 channels: gs.channels
             }
         })
     };
-
+    r.games.push({
+        name: 'Other Games',
+        viewers: r.viewers - r.games.reduce((t, g) => (t.viewers || t) + g.viewers),
+        channels: r.channels - r.games.reduce((t, g) => (t.channels || t) + g.channels)
+    });
+    return r;
 };
 
 module.exports = Snapshot;
