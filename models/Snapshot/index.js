@@ -1,4 +1,4 @@
-var db = require('../../models/db');
+var { query } = require('../../models/db');
 var twitch = require('../../models/twitch');
 
 var SummarySnapshot = require('../../models/Snapshot/SummarySnapshot');
@@ -40,12 +40,8 @@ Snapshot.prototype.getFromTwitch = function() {
 Snapshot.prototype.get = function() {
     return new Promise((resolve, reject) => {
         this.summary.get().then(() => {
-            var client = db.client();
-             client.connect();
             var queryText = 'SELECT * FROM game_snapshots JOIN games ON (games._id = game_snapshots.game_id) WHERE game_snapshots.snapshot_time = $1';
-            return client.query(queryText, [ this.time.toISOString() ], (err, res) => {
-                client.end();
-                if (err) return reject(err);
+            return query(queryText, [ this.time.toISOString() ]).then(res => {
                 this.gameSnapshots = res.rows.map((g) => {
                     return new GameSnapshot(g.game_id, g.snapshot_time, g);
                 });
@@ -60,7 +56,6 @@ Snapshot.prototype.get = function() {
 
 Snapshot.prototype.save = function() {
     return new Promise((resolve, reject) => {
-
         if (!this.gameSnapshots.length) return reject('No game snapshots to save');
 
         var promises = [];

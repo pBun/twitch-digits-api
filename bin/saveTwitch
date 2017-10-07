@@ -5,7 +5,6 @@ var Snapshot = require('../models/Snapshot');
 var handleErr = (err) => {
     console.log(err);
 };
-
 new Snapshot().getFromTwitch()
     .then((snapshot) => {
         return snapshot.save();

@@ -1,21 +1,35 @@
-var { Client } = require('pg');
+var { Pool } = require('pg');
 var pgOpts = process.env.DATABASE_URL ? {
     connectionString: process.env.DATABASE_URL,
     ssl: true
 } : null;
+var pool = new Pool(Object.assign({}, pgOpts));
+var query = (queryText, queryValues) => {
+    return new Promise((resolve, reject) => {
+        pool.connect()
+          .then(client => {
+            return client.query(queryText, queryValues)
+              .then(res => {
+                client.release();
+                resolve(res);
+              })
+              .catch(e => {
+                client.release()
+                reject(e);
+              })
+          }, reject);
+    });
+};
 
 module.exports = {
-    client: (opts) => new Client(Object.assign({}, pgOpts, opts)),
+    pool: pool,
+    query: query,
     getSnapshotTimes: () => {
         return new Promise((resolve, reject) => {
-            var client = new Client(pgOpts);
-            client.connect();
             var queryText = 'SELECT _time, viewers, channels FROM summary_snapshots';
-            client.query(queryText, (err, res) => {
-                client.end();
-                if (err || !res.rows.length) return reject(err);
+            query(queryText).then(res => {
                 resolve(res.rows);
-            });
+            }, reject);
         });
     }
 };

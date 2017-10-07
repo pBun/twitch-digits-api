@@ -1,4 +1,4 @@
-var db = require('../../models/db');
+var { query } = require('../../models/db');
 
 var GameSnapshot = function(game_id, snapshot_time, options) {
     options = options || {};
@@ -23,29 +23,19 @@ GameSnapshot.prototype.getFromTwitch = function(name) {
 
 GameSnapshot.prototype.get = function() {
     return new Promise((resolve, reject) => {
-        var client = db.client();
-        client.connect();
         var queryText = 'SELECT * FROM snapshots WHERE game_id = $1 AND snapshot_time = $2';
-        client.query(queryText, [this.game_id, this.snapshot_time], (err, res) => {
-            client.end();
-            if (err) return reject(err);
+        query(queryText, [this.game_id, this.snapshot_time]).then(res => {
             if (!res.rows.length) return reject('No snapshots for ' + this.game_id + ' found at this time (' + this.snapshot_time + ').');
             Object.assign(this, res.rows[0]);
             resolve(this);
-        });
+        }, reject);
     });
 };
 
 GameSnapshot.prototype._insert = function() {
     return new Promise((resolve, reject) => {
-        var client = db.client();
-        client.connect();
         var queryText = 'INSERT INTO game_snapshots(game_id, snapshot_time, channels, viewers) VALUES($1, $2, $3, $4)';
-        client.query(queryText, [this.game_id, this.snapshot_time, this.channels, this.viewers], (err, res) => {
-            client.end();
-            if (err) return reject(err);
-            resolve();
-        });
+        query(queryText, [this.game_id, this.snapshot_time, this.channels, this.viewers]).then(resolve, reject);
     });
 };
 
