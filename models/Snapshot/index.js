@@ -61,6 +61,8 @@ Snapshot.prototype.get = function() {
 Snapshot.prototype.save = function() {
     return new Promise((resolve, reject) => {
 
+        if (!this.gameSnapshots.length) return reject('No game snapshots to save');
+
         var promises = [];
 
         // save summary
