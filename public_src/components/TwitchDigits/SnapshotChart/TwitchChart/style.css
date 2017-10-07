@@ -1,0 +1,28 @@
+/* # Chart
+================================================== */
+
+.chart {
+  display: block;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+.chart path {
+  stroke: #fff;
+  stroke-width: 0.25;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.chart.active path {
+  opacity: 0.3;
+}
+
+.chart.active path.current {
+  opacity: 1;
+}
+
+.chart.zoomed path.game {
+  opacity: 0;
+}

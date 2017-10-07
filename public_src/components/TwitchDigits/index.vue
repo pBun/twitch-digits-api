@@ -1,5 +1,6 @@
 <template>
 <div class="twitch-digits">
+    <snapshot-chart :snapshot="snapshot"></snapshot-chart>
     <snapshot-menu :times="times" @linkClick="loadSnapshot"></snapshot-menu>
     <walking-loader class="loader" :class="{ 'visible': (!initialized || loading) }"></walking-loader>
     <error-modal :error="error"></error-modal>
@@ -11,6 +12,7 @@ import http from '../../helpers/http';
 import WalkingLoader from './WalkingLoader.vue';
 import ErrorModal from './ErrorModal.vue';
 import SnapshotMenu from './SnapshotMenu.vue';
+import SnapshotChart from './SnapshotChart/index.vue';
 export default {
     data() {
         return {
@@ -43,11 +45,14 @@ export default {
         var tp = this.loadTimes();
         Promise.all([sp, tp]).then(() => this.initialized = true)
     },
-    components: { WalkingLoader, ErrorModal, SnapshotMenu }
+    components: { SnapshotChart, WalkingLoader, ErrorModal, SnapshotMenu }
 }
 </script>
 
 <style>
+.twitch-digits {
+    height: 90%;
+}
 .twitch-digits .error-modal {
     display: none;
 }
