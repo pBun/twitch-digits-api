@@ -42,7 +42,7 @@ module.exports = {
         }
     },
     performance: {
-        hints: process.env.NODE_ENV === 'production' ? 'warning' : false
+        hints: false//process.env.NODE_ENV === 'production' ? 'warning' : false
     },
     devtool: 'eval-source-map',
     plugins: [
