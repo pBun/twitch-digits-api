@@ -25,11 +25,11 @@ SummarySnapshot.prototype.get = function() {
         client.connect();
         var queryText = 'SELECT * FROM summary_snapshots WHERE _time = $1';
         client.query(queryText, [this._time], (err, res) => {
+            client.end();
             if (err) return reject(err);
             if (!res.rows.length) return reject('No summaries found for this time (' + this._time + ').');
             Object.assign(this, res.rows[0]);
             resolve(this);
-            client.end();
         });
     });
 };
@@ -40,9 +40,9 @@ SummarySnapshot.prototype._insert = function() {
         client.connect();
         var queryText = 'INSERT INTO summary_snapshots(_time, channels, viewers) VALUES($1, $2, $3)';
         client.query(queryText, [this._time, this.channels, this.viewers], (err, res) => {
+            client.end();
             if (err) return reject(err);
             resolve();
-            client.end();
         });
     });
 };
