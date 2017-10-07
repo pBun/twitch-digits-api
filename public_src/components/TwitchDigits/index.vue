@@ -1,7 +1,7 @@
 <template>
 <div class="twitch-digits">
     <snapshot-chart :snapshot="snapshot" :class="{ 'loading': loading || error }"></snapshot-chart>
-    <snapshot-menu :times="times" @linkClick="loadSnapshot"></snapshot-menu>
+    <snapshot-menu :times="times" @linkClick="refresh"></snapshot-menu>
     <walking-loader class="loader" :class="{ 'visible': (!initialized || loading) }"></walking-loader>
     <error-modal :error="error"></error-modal>
 </div>
@@ -20,15 +20,29 @@ export default {
             loading: false,
             error: null,
             times: [],
+            now: null,
             snapshot: null
         }
     },
     methods: {
+        refresh(time) {
+            return this.loadSnapshot(time)
+                .then(() => this.loadTimes());
+        },
+        setNow(s) {
+            this.now = {
+                'viewers': s.viewers,
+                'channels': s.channels
+            };
+        },
         loadTimes() {
             this.loading = true;
             this.error = null;
             return http.getJson('/api/snapshot/times')
-                .then(t => this.times = t, err => this.error = err)
+                .then(t => {
+                    t.push(this.now);
+                    this.times = t;
+                }, err => this.error = err)
                 .then(() => this.loading = false);
         },
         loadSnapshot(time) {
@@ -36,14 +50,15 @@ export default {
             this.error = null;
             var url = time ? '/api/snapshot/' + time : '/api/snapshot';
             return http.getJson(url)
-                .then(s => this.snapshot = s, err => this.error = err)
+                .then(s => {
+                    if (!time) this.setNow(s);
+                    this.snapshot = s
+                }, err => this.error = err)
                 .then(() => this.loading = false);
         }
     },
     created() {
-        var sp = this.loadSnapshot();
-        var tp = this.loadTimes();
-        Promise.all([sp, tp]).then(() => this.initialized = true)
+        this.refresh().then(() => this.initialized = true);
     },
     components: { SnapshotChart, WalkingLoader, ErrorModal, SnapshotMenu }
 }

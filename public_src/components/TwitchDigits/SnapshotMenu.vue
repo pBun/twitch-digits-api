@@ -1,6 +1,6 @@
 <template>
 <div class="snapshot-menu">
-    <a class="snapshot-link" v-for="(t, i) in times" :style="{ height: calcHeight(t) }"
+    <a class="snapshot-link" v-for="(t, i) in times" :style="{ height: calcHeight(t.viewers) }"
         @click="handleLink(t._time)" v-tooltip="prettyTime(t._time)">{{ i }}</a>
 </div>
 </template>
@@ -11,19 +11,21 @@ export default {
     props: [ 'times' ],
     computed: {
         maxViewers(scope) {
-            return scope.times.reduce((a, b) => Math.max(a.viewers || 0, b.viewers), 0);
+            return scope.times
+                .map(a => a.viewers)
+                .reduce((a, b) => Math.max(a || 0, b), 0);
         }
     },
     methods: {
         calcHeight(v) {
-            return this.percent(v.viewers / this.maxViewers, 2);
+            return this.percent(v / this.maxViewers, 2);
         },
         percent(v, decimals) {
             if (typeof v !== 'number') return v;
             return (v * 100).toFixed(decimals || 0) + '%';
         },
         prettyTime(v) {
-            if (!v) return v;
+            if (!v) return 'Now';
             var d = new Date(v);
             return d.toLocaleString();
         },
