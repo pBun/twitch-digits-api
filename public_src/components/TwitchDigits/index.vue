@@ -1,17 +1,16 @@
 <template>
 <div class="twitch-digits">
-    <div class="snapshot-menu">
-        <a v-for="(t, i) in times" @click="loadSnapshot(t._time)">{{ i }}</a>
-    </div>
+    <snapshot-menu :times="times" @linkClick="loadSnapshot"></snapshot-menu>
     <walking-loader class="loader" :class="{ 'visible': (!initialized || loading) }"></walking-loader>
     <error-modal :error="error"></error-modal>
 </div>
 </template>
 
 <script>
-import http from '../helpers/http';
+import http from '../../helpers/http';
 import WalkingLoader from './WalkingLoader.vue';
 import ErrorModal from './ErrorModal.vue';
+import SnapshotMenu from './SnapshotMenu.vue';
 export default {
     data() {
         return {
@@ -39,18 +38,12 @@ export default {
                 .then(() => this.loading = false);
         }
     },
-    filters: {
-        prettyTime(v) {
-            var d = new Date(v);
-            return d.toString();
-        }
-    },
     created() {
         var sp = this.loadSnapshot();
         var tp = this.loadTimes();
         Promise.all([sp, tp]).then(() => this.initialized = true)
     },
-    components: { WalkingLoader, ErrorModal }
+    components: { WalkingLoader, ErrorModal, SnapshotMenu }
 }
 </script>
 

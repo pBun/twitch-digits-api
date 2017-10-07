@@ -27,6 +27,7 @@
         "pg": "^7.3.0",
         "request": "^2.83.0",
         "style-loader": "^0.19.0",
+        "v-tooltip": "^2.0.0-rc.2",
         "vue": "^2.4.4",
         "vue-loader": "^13.0.5",
         "vue-template-compiler": "^2.4.4",

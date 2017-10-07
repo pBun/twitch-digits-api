@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import TwitchDigits from './TwitchDigits.vue';
+import TwitchDigits from './TwitchDigits/index.vue';
 import ForkMe from './ForkMe.vue';
 export default {
     name: 'app',
