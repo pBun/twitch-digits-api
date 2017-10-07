@@ -1,6 +1,6 @@
 <template>
 <div class="snapshot-menu">
-    <a class="snapshot-link" v-for="(t, i) in times" :style="{ height: calcHeight(t.viewers) }"
+    <a class="snapshot-link" v-for="(t, i) in times" :class="{ 'selected': t._time === selected }" :style="{ height: calcHeight(t.viewers) }"
         @click="handleLink(t._time)" v-tooltip="prettyTime(t._time)">{{ i }}</a>
 </div>
 </template>
@@ -8,7 +8,7 @@
 <script>
 import { VTooltip } from 'v-tooltip';
 export default {
-    props: [ 'times' ],
+    props: [ 'times', 'selected' ],
     computed: {
         maxViewers(scope) {
             return scope.times
@@ -62,5 +62,8 @@ export default {
 }
 .twitch-digits .snapshot-link:hover {
     background-color: rgba(100, 65, 165, 0.95);
+}
+.twitch-digits .snapshot-link.selected {
+    background-color: rgba(100, 65, 165, 1);
 }
 </style>

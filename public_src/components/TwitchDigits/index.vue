@@ -1,7 +1,7 @@
 <template>
 <div class="twitch-digits">
     <snapshot-chart :snapshot="snapshot" :class="{ 'loading': loading || error }"></snapshot-chart>
-    <snapshot-menu :times="times" @linkClick="refresh"></snapshot-menu>
+    <snapshot-menu :times="times" :selected="selected" @linkClick="refresh"></snapshot-menu>
     <walking-loader class="loader" :class="{ 'visible': (!initialized || loading) }"></walking-loader>
     <error-modal :error="error"></error-modal>
 </div>
@@ -20,6 +20,7 @@ export default {
             loading: false,
             error: null,
             times: [],
+            selected: null,
             now: null,
             snapshot: null
         }
@@ -51,6 +52,7 @@ export default {
             var url = time ? '/api/snapshot/' + time : '/api/snapshot';
             return http.getJson(url)
                 .then(s => {
+                    this.selected = time;
                     if (!time) this.setNow(s);
                     this.snapshot = s
                 }, err => this.error = err)
