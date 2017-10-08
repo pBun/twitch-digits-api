@@ -39,7 +39,7 @@ export default {
             var dur = moment.duration(diff);
             var d = Math.floor(dur.asDays());
             var h = Math.round(dur.asHours() - d * 24);
-            return (d ? d + 'd ' : '') + h + 'h ago';
+            return (d ? d + 'd ' : '') + (h ? h + 'h' : 'a few minutes') + ' ago';
 
         }
     },
