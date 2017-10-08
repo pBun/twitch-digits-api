@@ -1,6 +1,6 @@
-# twitch-digits
+# twitch-digits-api
 
-A rework of the [original twitch digits app](https://github.com/pBun/twitch-digits-old) that I made over 2 years ago. The old one is still currently hosted at [http://digits.twitch.pub/](http://digits.twitch.pub/), this will eventually replace it.
+The REST api to support the [twitch digits app](http://digits.twitch.pub/). Front-end repo (here)[https://github.com/pBun/twitch-digits].
 
 ## Local development
 
@@ -19,5 +19,3 @@ Build, serve, and watch:
 ```
 npm run dev
 ```
-
-Source files in `public_src` compile to `public`.

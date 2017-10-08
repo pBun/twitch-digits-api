@@ -1,6 +1,5 @@
 # App #
 ###################
-public_dev
 .env*
 
 # Node #
