@@ -1,1 +1,1 @@
-web: webpack --hide-modules && node index.js
+web: node index.js

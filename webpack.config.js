@@ -2,10 +2,12 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
+var p = process.env.NODE_ENV === 'production' ? './public' : './public_dev';
+
 module.exports = {
     entry: './public_src/index.js',
     output: {
-        path: path.resolve(__dirname, './public'),
+        path: path.resolve(__dirname, p),
         publicPath: '/',
         filename: 'app.js'
     },
@@ -42,7 +44,7 @@ module.exports = {
         }
     },
     performance: {
-        hints: false//process.env.NODE_ENV === 'production' ? 'warning' : false
+        hints: false
     },
     devtool: 'eval-source-map',
     plugins: [
