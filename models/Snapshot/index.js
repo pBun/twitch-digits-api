@@ -133,47 +133,34 @@ Snapshot.prototype.save = function() {
 };
 
 Snapshot.prototype.prettify = function() {
-    var games = this.gameSnapshots.map((gs) => {
-        var g = this.games.filter(g => g._id === gs.game_id);
-        g = g.length ? g[0] : {};
-        var streams = this.channelSnapshots
-            .filter(cs => cs.game_id === g._id)
-            .map(cs => {
-                var c = this.channels.filter(c => c._id === cs.channel_id);
-                c = c.length ? c[0] : {};
-                return {
-                    name: c.name,
-                    displayName: c.display_name,
-                    url: c.url,
-                    image: c.logo_art,
-                    viewers: cs.viewers || 0
-                };
-            });
-        streams.push({
-            name: 'other',
-            displayName: 'Other',
-            viewers: gs.viewers - streams.reduce((t, s) => (t.viewers || t) + s.viewers, 0)
-        });
-        return {
-            name: g.name,
-            image: g.box_art,
-            viewers: gs.viewers || 0,
-            channels: gs.channels,
-            streams: streams
-        };
-    });
-    var r = {
+    return {
         time: this.time,
         viewers: this.summary.viewers || 0,
         channels: this.summary.channels || 0,
-        games: games
+        games: this.gameSnapshots.map((gs) => {
+            var g = this.games.filter(g => g._id === gs.game_id);
+            g = g.length ? g[0] : {};
+            return {
+                name: g.name,
+                image: g.box_art,
+                viewers: gs.viewers || 0,
+                channels: gs.channels,
+                streams: this.channelSnapshots
+                    .filter(cs => cs.game_id === g._id)
+                    .map(cs => {
+                        var c = this.channels.filter(c => c._id === cs.channel_id);
+                        c = c.length ? c[0] : {};
+                        return {
+                            name: c.name,
+                            displayName: c.display_name,
+                            url: c.url,
+                            image: c.logo_art,
+                            viewers: cs.viewers || 0
+                        };
+                    })
+            }
+        })
     };
-    r.games.push({
-        name: 'Other',
-        viewers: r.viewers - r.games.reduce((t, g) => (t.viewers || t) + g.viewers, 0),
-        channels: r.channels - r.games.reduce((t, g) => (t.channels || t) + g.channels, 0)
-    });
-    return r;
 };
 
 module.exports = Snapshot;
