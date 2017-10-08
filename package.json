@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "snapshot": "node ./bin/saveTwitch",
-        "dev": "nodemon index.js"
+        "dev": "heroku local -f Procfile.local"
     },
     "nodemonConfig": {
         "ignore": [

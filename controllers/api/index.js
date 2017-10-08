@@ -3,13 +3,13 @@ var cors = require('cors');
 var router = express.Router();
 
 
-var whitelist = ['digits2.twitch.pub']
+var whitelist = ['http://digits2.twitch.pub']
 var corsOptions = {
     origin: function(origin, callback) {
-        if (!origin || origin.indexOf('localhost') !== -1 || whitelist.indexOf(origin) !== -1) {
+        if (!origin || whitelist.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
             callback(null, true)
         } else {
-            callback(new Error('Not allowed by CORS'))
+            callback(origin + ' not allowed by CORS.')
         }
     }
 };
