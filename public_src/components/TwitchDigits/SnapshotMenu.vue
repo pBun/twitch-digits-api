@@ -57,8 +57,9 @@ export default {
     height: 10%;
     text-indent: -100%;
     overflow: hidden;
-    border: 1px solid #6441a5;
     transition: background-color 0.3s;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 .twitch-digits .snapshot-link:hover {
     background-color: rgba(100, 65, 165, 0.95);

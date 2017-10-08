@@ -1,15 +1,18 @@
 <template>
-<div class="snapshot-chart chart-wrapper">
+<div class="chart-wrapper">
     <div class="explanation" :style="{ backgroundImage: bgImg(selectedData.image) }">
         <div class="info">
             <p class="inner-info" v-if="selectedGame">
                 <span class="title">{{ selectedData.name }}</span>
-                <strong>{{ selectedData.viewers / baseData.viewers | percent(2) }}</strong> of all <strong>{{ selectedData.type === 'channel' ? selectedGame.name : '' }}</strong> viewers {{ prettyTime ? 'were' : 'are' }} watching this {{ selectedData.type }} {{ prettyTime ? 'at ' + prettyTime + '.' : 'now.' }}
+                <span class="stat">
+                  <strong class="value">{{ selectedGame.viewers | prettyNumber }} | {{ selectedGame.viewers / baseData.viewers | percent(2) }}</strong>
+                </span>
             </p>
             <p class="inner-info" v-if="snapshot && !selectedGame && !selectedChannel">
-              <span class="title">{{ prettyTime ? prettyTime : 'Now' }}</span>
-              <strong>{{ snapshot.viewers | prettyNumber }}</strong> viewers<br />
-              <strong>{{ snapshot.channels | prettyNumber }}</strong> channels
+              <span class="stat">
+                <span class="icon"><svg viewBox="0 0 16 16" height="100%" version="1.1" width="100%" x="0px" y="0px"><path clip-rule="evenodd" d="M11,14H5H2v-1l3-3h2L5,8V2h6v6l-2,2h2l3,3v1H11z" fill-rule="evenodd"></path></svg></span>
+                <strong class="value">{{ baseData.viewers | prettyNumber }}</strong>
+              </span>
             </p>
         </div>
         <span class="back-info">click to go back</span>
@@ -21,7 +24,7 @@
 import util from '../util';
 import TwitchChart from './TwitchChart';
 export default {
-    props: [ 'snapshot', 'time' ],
+    props: [ 'snapshot' ],
     data() {
         return {
             chart: null,
@@ -32,18 +35,11 @@ export default {
         };
     },
     computed: {
-        prettyTime(scope) {
-            var t = scope.time;
-            if (!t) return '';
-            var d = new Date(t);
-            return d.toLocaleString();
-        },
         selectedData(scope) {
             return scope.selectedChannel || scope.selectedGame || scope.snapshot || { name: '', viewers: 0 };
         },
         baseData(scope) {
-            return scope.selectedChannel ? scope.selectedGame :
-                    scope.selectedGame ? scope.snapshot : { name: '', viewers: 0 };
+            return scope.snapshot || { name: '', viewers: 0 };
         },
         chartData(scope) {
             var d = util.clone(scope.snapshot);
@@ -107,13 +103,13 @@ export default {
 </script>
 
 <style>
-.twitch-digits .snapshot-chart {
+.chart-wrapper {
     position: relative;
     display: inline-block;
     min-height: 320px;
     min-width: 320px;
 }
-.twitch-digits .snapshot-chart .explanation {
+.chart-wrapper .explanation {
   position: absolute;
   margin: auto;
   left: 0;
@@ -131,8 +127,7 @@ export default {
   background: no-repeat;
   background-size: cover;
 }
-
-.twitch-digits .snapshot-chart .explanation .info {
+.chart-wrapper .explanation .info {
   position: absolute;
   background: rgba(100,65,165,0.85);
   color: #fefefe;
@@ -148,21 +143,40 @@ export default {
   text-align: center;
   padding: 20% 10%;
 }
-.twitch-digits .snapshot-chart .explanation .info .inner-info {
+.chart-wrapper .explanation .info .inner-info {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
   margin: 0;
 }
-
-.twitch-digits .snapshot-chart .explanation .info .inner-info .title {
-  font-size: 2em;
+.chart-wrapper .explanation .title {
+  font-size: 1.5em;
+  display: block;
+  margin-bottom: 0.2em;
   line-height: 1em;
+}
+.chart-wrapper .explanation .stat {
+  font-size: 2em;
   display: block;
   margin-bottom: 0.1em;
+  line-height: 1em;
 }
-
-.twitch-digits .snapshot-chart .explanation .back-info {
+.chart-wrapper .explanation .icon,
+.chart-wrapper .explanation .label,
+.chart-wrapper .explanation .value {
+  display: inline-block;
+  vertical-align: middle;
+}
+.chart-wrapper .explanation .label {
+  font-size: 0.6667em;
+  line-height: 1em;
+}
+.chart-wrapper .explanation .icon {
+  height: 1em;
+  width: 1em;
+  fill: #fff;
+}
+.chart-wrapper .explanation .back-info {
   color: #fff;
   position: absolute;
   bottom: 20%;
@@ -171,7 +185,7 @@ export default {
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
-.twitch-digits .snapshot-chart .chart-zoomed .explanation .back-info {
+.chart-wrapper .chart-zoomed .explanation .back-info {
   opacity: 0.5;
 }
 </style>
