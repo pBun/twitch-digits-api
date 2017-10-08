@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+process.env.DB_CLIENTS = 1;
 var Snapshot = require('../models/Snapshot');
 
 var handleErr = (err) => {

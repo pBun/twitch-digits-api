@@ -1,7 +1,8 @@
 var { Pool } = require('pg');
 var pgOpts = process.env.DATABASE_URL ? {
     connectionString: process.env.DATABASE_URL,
-    ssl: true
+    ssl: true,
+    max: process.env.DB_CLIENTS || 19
 } : null;
 var pool = new Pool(Object.assign({}, pgOpts));
 var query = (queryText, queryValues) => {
