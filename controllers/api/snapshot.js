@@ -9,7 +9,7 @@ var Game = require('../../models/Game');
 var Snapshot = require('../../models/Snapshot');
 
 router.get('/', function(req, res) {
-    new Snapshot().getFromTwitch()
+    new Snapshot().getFromTwitch(true)
         .then(snapshot => jsonRes(res, snapshot.prettify()), err => jsonRes(res, null, err || true));
 });
 
