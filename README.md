@@ -1,6 +1,6 @@
 # twitch-digits-api
 
-The REST api to support the [twitch digits app](http://digits.twitch.pub/). Front-end repo (here)[https://github.com/pBun/twitch-digits].
+The REST api to support the [twitch digits app](http://digits2.twitch.pub/). Front-end repo (here)[https://github.com/pBun/twitch-digits].
 
 ## Local development
 
