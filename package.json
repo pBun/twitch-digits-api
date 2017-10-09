@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "snapshot": "node ./bin/saveTwitch",
-        "dev": "cross-env NODE_ENV=development heroku local -f Procfile.local"
+        "dev": "cross-env NODE_ENV=development nodemon index.js"
     },
     "nodemonConfig": {
         "ignore": [
