@@ -1,6 +1,6 @@
-DROP TABLE snapshots, games, channels, game_snapshots, channel_snapshots;
+DROP TABLE summary_snapshots, games, channels, game_snapshots, channel_snapshots;
 
-CREATE TABLE snapshots
+CREATE TABLE summary_snapshots
 (
     _time TIMESTAMP with time zone PRIMARY KEY,
     viewers INTEGER,
@@ -35,7 +35,7 @@ CREATE TABLE game_snapshots
         REFERENCES games (_id)
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT snapshot_time_fkey FOREIGN KEY (snapshot_time)
-        REFERENCES snapshots (_time)
+        REFERENCES summary_snapshots (_time)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -53,6 +53,6 @@ CREATE TABLE channel_snapshots
         REFERENCES games (_id)
         ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT snapshot_time_fkey FOREIGN KEY (snapshot_time)
-        REFERENCES snapshots (_time)
+        REFERENCES summary_snapshots (_time)
         ON UPDATE CASCADE ON DELETE CASCADE
 );
