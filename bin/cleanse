@@ -2,7 +2,7 @@
 process.env.DB_CLIENTS = 1;
 var { query } = require('../models/db');
 
-NUM_DAYS_KEEP = 14;
+NUM_DAYS_KEEP = 7;
 
 var cleanseDate = new Date();
 cleanseDate.setDate(cleanseDate.getDate() - NUM_DAYS_KEEP);
