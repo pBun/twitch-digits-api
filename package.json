@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "snapshot": "node ./bin/saveTwitch",
+        "snapshot": "node ./bin/saveSnapshot",
         "dev": "cross-env NODE_ENV=development nodemon index.js"
     },
     "nodemonConfig": {
