@@ -7,10 +7,11 @@ NUM_DAYS_KEEP = 14;
 var cleanseDate = new Date();
 cleanseDate.setDate(cleanseDate.getDate() - NUM_DAYS_KEEP);
 
-var queryText = 'DELETE FROM game_snapshots WHERE snapshot_time < $1';
-return query(queryText, [ cleanseDate.toISOString() ]).then(res => {
-    
-}, err => {
-	console.log(err);
-});
+return query('DELETE FROM game_snapshots WHERE snapshot_time < $1', [ cleanseDate.toISOString() ])
+	.then(res => {
+	    return query('DELETE FROM games g WHERE NOT EXISTS (SELECT NULL FROM game_snapshots gs WHERE g._id = gs.game_id)');
+	})
+	.catch(err => {
+		console.log(err);
+	});
 
