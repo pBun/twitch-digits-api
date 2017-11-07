@@ -9,6 +9,9 @@ cleanseDate.setDate(cleanseDate.getDate() - NUM_DAYS_KEEP);
 
 return query('DELETE FROM game_snapshots WHERE snapshot_time < $1', [ cleanseDate.toISOString() ])
 	.then(res => {
+        return query('DELETE FROM summary_snapshots WHERE _time < $1', [ cleanseDate.toISOString() ]);
+    })
+    .then(res => {
 	    return query('DELETE FROM games g WHERE NOT EXISTS (SELECT NULL FROM game_snapshots gs WHERE g._id = gs.game_id)');
 	})
 	.catch(err => {
