@@ -133,34 +133,45 @@ Snapshot.prototype.save = function() {
 };
 
 Snapshot.prototype.prettify = function() {
-    return {
+    var snapshot = {};
+    snapshot.summary = {
         time: this.time,
         viewers: this.summary.viewers || 0,
-        channels: this.summary.channels || 0,
-        games: this.gameSnapshots.map((gs) => {
-            var g = this.games.filter(g => g._id === gs.game_id);
-            g = g.length ? g[0] : {};
-            return {
-                name: g.name,
-                image: g.box_art,
-                viewers: gs.viewers || 0,
-                channels: gs.channels,
-                streams: this.channelSnapshots
-                    .filter(cs => cs.game_id === g._id)
-                    .map(cs => {
-                        var c = this.channels.filter(c => c._id === cs.channel_id);
-                        c = c.length ? c[0] : {};
-                        return {
-                            name: c.name,
-                            displayName: c.display_name,
-                            url: c.url,
-                            image: c.logo_art,
-                            viewers: cs.viewers || 0
-                        };
-                    })
-            }
-        })
+        channels: this.summary.channels || 0
     };
+    snapshot.gameSnapshots = this.gameSnapshots.map((gs) => {
+        return {
+            time: this.time,
+            gameId: gs.game_id,
+            viewers: gs.viewers || 0,
+            channels: gs.channels
+        };
+    });
+    snapshot.channelSnapshots = this.channelSnapshots.map(cs => {
+        return {
+            time: this.time,
+            channelId: cs.channel_id,
+            gameId: cs.game_id,
+            viewers: cs.viewers || 0
+        };
+    });
+    snapshot.games = this.games.map(g => {
+        return {
+            id: g._id,
+            name: g.name,
+            image: g.box_art
+        }
+    });
+    snapshot.channels = this.channels.map(c => {
+        return {
+            id: c._id,
+            name: c.name,
+            displayName: c.display_name,
+            url: c.url,
+            image: c.logo_art
+        }
+    });
+    return snapshot;
 };
 
 module.exports = Snapshot;
