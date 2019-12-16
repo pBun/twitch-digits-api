@@ -1,23 +1,26 @@
-var request = require('request');
+var axios = require('axios');
 var config = require('./config');
 
 module.exports = function(options) {
-    var opts = Object.assign({
-        limit: 25,
-        offset: 0
-    }, options);
-
     return new Promise((resolve, reject) => {
-        request({
+        var opts = Object.assign({
+            limit: 25,
+            offset: 0
+        }, options);
+        axios({
             method: 'get',
             url: config.host + '/games/top',
-            qs: opts,
+            params: opts,
             headers: config.defaultHeaders,
-        }, (error, response, data) => {
-            if (error) return reject(error);
-            var d = JSON.parse(data || '') || {};
-            resolve(d.top);
-        });
+            responseType: 'json',
+        })
+          .catch((err) => {
+              reject(err);
+          })
+          .then((res) => {
+            const data = res && res.data && res.data.top;
+            resolve(data || {});
+          });
     });
 
 };

@@ -1,20 +1,23 @@
-var request = require('request');
+var axios = require('axios');
 var config = require('./config');
 
 module.exports = function(options) {
-    var opts = Object.assign({}, options);
-
     return new Promise((resolve, reject) => {
-        request({
+        var opts = Object.assign({}, options);
+        axios({
             method: 'get',
             url: config.host + '/streams/summary',
-            qs: opts,
+            params: opts,
             headers: config.defaultHeaders,
-        }, (error, response, data) => {
-            if (error) return reject(error);
-            var d = JSON.parse(data || '') || {};
-            resolve(d);
-        });
+            responseType: 'json',
+        })
+          .catch((err) => {
+              reject(err);
+          })
+          .then((res) => {
+            const data = res && res.data;
+            resolve(data || {});
+          });
     });
 
 };
