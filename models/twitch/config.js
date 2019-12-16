@@ -5,7 +5,7 @@ module.exports = {
     host: TWITCH_API,
     clientId: TWITCH_CLIENT_ID,
     defaultHeaders: {
-        // 'Accept': 'application/vnd.twitchtv.v5+json',
+        'Accept': 'application/vnd.twitchtv.v5+json',
         'Client-ID': TWITCH_CLIENT_ID
     }
 };

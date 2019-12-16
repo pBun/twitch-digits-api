@@ -12,8 +12,9 @@ module.exports = function(options) {
             method: 'get',
             url: config.host + '/games/top',
             qs: opts,
-            headers: config.defaultHeaders
+            headers: config.defaultHeaders,
         }, (error, response, data) => {
+            if (error) return reject(error);
             var d = JSON.parse(data || '') || {};
             resolve(d.top);
         });
